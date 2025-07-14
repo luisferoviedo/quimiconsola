@@ -10,18 +10,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --retro-green: #00FF41;
-            --dark-bg: #0d0d0d;
-            --glow-color: rgba(0, 255, 65, 0.5);
-            --red-error: #e74c3c;
-            --yellow-warn: #f39c12;
-            --modern-bg: #f4f6f9;
-            --modern-text: #2c3e50;
-            --modern-primary: #1a73e8;
-            --modern-secondary: #1557b0;
-            --modern-accent: #4a90e2;
-            --modern-border: #e0e0e0;
-            --modern-shadow: rgba(0,0,0,0.1);
+            --retro-green: #00FF41; --dark-bg: #0d0d0d; --glow-color: rgba(0, 255, 65, 0.5); 
+            --red-error: #e74c3c; --yellow-warn: #f39c12;
+            --modern-bg: #f4f6f9; --modern-text: #2c3e50; --modern-primary: #3498db; --modern-secondary: #2980b9;
         }
 
         /* --- ESTILOS BASE Y DE TRANSICIÓN --- */
@@ -29,17 +20,12 @@
             font-family: 'Press Start 2P', cursive;
             background-color: var(--dark-bg);
             color: var(--retro-green);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;
             text-align: center;
             transition: background-color 0.4s ease, color 0.4s ease;
         }
         .game-container {
-            width: 95%;
-            max-width: 800px;
+            width: 95%; max-width: 800px;
             background: #000;
             border: 2px solid var(--retro-green);
             border-radius: 15px;
@@ -53,26 +39,12 @@
         .screen.active { display: block; }
         .hidden { display: none; }
 
-        /* --- ESTÉTICA RETRO (MODO JUEGO) --- */
+        /* --- ESTÉTICA RETRO (POR DEFECTO) --- */
         body:not(.admin-mode) { text-shadow: 0 0 5px var(--glow-color); }
-        body:not(.admin-mode) .game-container::after {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0px, rgba(0, 0, 0, 0.3) 1px, transparent 1px, transparent 3px);
-            pointer-events: none;
-        }
+        body:not(.admin-mode) .game-container::after { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0px, rgba(0, 0, 0, 0.3) 1px, transparent 1px, transparent 3px); pointer-events: none; }
         body:not(.admin-mode) #splash-screen { animation: text-flicker 0.1s infinite alternate; }
         @keyframes text-flicker { 0% { opacity: 0.98; } 100% { opacity: 1; } }
-        body:not(.admin-mode) .rules-container, body:not(.admin-mode) #admin-report-view {
-            text-align: left;
-            font-size: 0.8em;
-            line-height: 1.8;
-        }
+        body:not(.admin-mode) .rules-container, body:not(.admin-mode) #admin-report-view { text-align: left; font-size: 0.8em; line-height: 1.8; }
         body:not(.admin-mode) .hidden-line { visibility: hidden; }
         body:not(.admin-mode) .blinking-cursor::after { content: '_'; animation: blink 1s step-end infinite; }
         @keyframes blink { 50% { visibility: hidden; } }
@@ -80,182 +52,42 @@
         h1 { font-size: 1.5em; margin-bottom: 20px; }
         h2 { font-size: 1.1em; }
         p { font-size: 0.8em; line-height: 1.5; margin-bottom: 20px; }
-        .btn {
-            background: transparent;
-            border: 2px solid var(--retro-green);
-            color: var(--retro-green);
-            padding: 15px;
-            font-family: inherit;
-            font-size: 0.8em;
-            cursor: pointer;
-            transition: background-color 0.2s, color 0.2s;
-            margin-top: 10px;
-        }
-        .btn:hover:not([disabled]) {
-            background-color: var(--retro-green);
-            color: var(--dark-bg);
-            text-shadow: none;
-        }
-        .btn.danger {
-            border-color: var(--red-error);
-            color: var(--red-error);
-        }
-        .btn.danger:hover {
-            background-color: var(--red-error);
-            color: var(--dark-bg);
-        }
-        .btn-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
+        .btn { background: transparent; border: 2px solid var(--retro-green); color: var(--retro-green); padding: 15px; font-family: inherit; font-size: 0.8em; cursor: pointer; transition: background-color 0.2s, color 0.2s; margin-top: 10px; }
+        .btn:hover:not([disabled]) { background-color: var(--retro-green); color: var(--dark-bg); text-shadow: none; }
+        .btn.danger { border-color: var(--red-error); color: var(--red-error); }
+        .btn.danger:hover { background-color: var(--red-error); color: var(--dark-bg); }
+        .btn-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 600px) { .btn-grid { grid-template-columns: repeat(2, 1fr); } }
-        .btn.correct {
-            background-color: #27ae60;
-            color: #fff;
-            border-color: #27ae60;
-        }
-        .btn.incorrect {
-            background-color: var(--red-error);
-            color: #fff;
-            border-color: #c0392b;
-        }
+        .btn.correct { background-color: #27ae60; color: #fff; border-color: #27ae60; }
+        .btn.incorrect { background-color: var(--red-error); color: #fff; border-color: #c0392b; }
         .btn[disabled] { cursor: not-allowed; opacity: 0.5; }
-        .input-field {
-            background: transparent;
-            border: 2px solid var(--retro-green);
-            color: var(--retro-green);
-            font-family: inherit;
-            padding: 10px;
-            width: 60%;
-            text-align: center;
-            margin: 10px;
-            font-size: 1em;
-        }
+        .input-field { background: transparent; border: 2px solid var(--retro-green); color: var(--retro-green); font-family: inherit; padding: 10px; width: 60%; text-align: center; margin: 10px; font-size: 1em; }
         .input-field:focus { outline: none; box-shadow: 0 0 10px var(--glow-color); }
-        .admin-section {
-            margin-top: 25px;
-            border-top: 1px solid var(--retro-green);
-            padding-top: 15px;
-        }
+        .admin-section { margin-top: 25px; border-top: 1px solid var(--retro-green); padding-top: 15px; }
         .admin-section h3 { text-align: center; }
-        #feedback-box {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px dashed var(--yellow-warn);
-            color: var(--yellow-warn);
-            text-align: left;
-        }
+        #feedback-box { margin-top: 20px; padding: 15px; border: 1px dashed var(--yellow-warn); color: var(--yellow-warn); text-align: left; }
         #feedback-box strong { display: block; margin-bottom: 5px; }
         #achievements-section { text-align: center; }
-        .achievement {
-            display: inline-block;
-            margin: 5px;
-            padding: 8px 12px;
-            border: 1px solid var(--yellow-warn);
-            color: var(--yellow-warn);
-            font-size: 0.7em;
-        }
+        .achievement { display: inline-block; margin: 5px; padding: 8px 12px; border: 1px solid var(--yellow-warn); color: var(--yellow-warn); font-size: 0.7em; }
         .achievement .icon { margin-right: 5px; }
-        #chart-container {
-            position: relative;
-            width: 90%;
-            max-width: 500px;
-            margin: 20px auto;
-            background-color: rgba(0, 255, 65, 0.05);
-            padding: 10px;
-            border: 1px solid var(--retro-green);
-        }
+        #chart-container { position: relative; width: 90%; max-width: 500px; margin: 20px auto; background-color: rgba(0, 255, 65, 0.05); padding: 10px; border: 1px solid var(--retro-green); }
 
         /* --- ESTÉTICA MODERNA (MODO ADMIN) --- */
-        body.admin-mode {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--modern-bg);
-            color: var(--modern-text);
-            text-shadow: none;
-        }
-        body.admin-mode .game-container {
-            background: #ffffff;
-            border: 1px solid var(--modern-border);
-            box-shadow: 0 4px 12px var(--modern-shadow);
-            border-radius: 12px;
-        }
+        body.admin-mode { font-family: 'Roboto', sans-serif; background-color: var(--modern-bg); color: var(--modern-text); text-shadow: none; }
+        body.admin-mode .game-container { background: #ffffff; border: 1px solid #e0e0e0; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
         body.admin-mode .game-container::after { background: none; }
-        body.admin-mode h1, body.admin-mode h2, body.admin-mode h3 {
-            color: var(--modern-text);
-            font-family: 'Roboto', sans-serif;
-            font-weight: 700;
-        }
-        body.admin-mode h1 { font-size: 1.8em; }
-        body.admin-mode p { font-size: 1em; line-height: 1.6; }
+        body.admin-mode h1, body.admin-mode h2, body.admin-mode h3 { color: #34495e; font-family: 'Roboto', sans-serif; }
+        body.admin-mode p { font-size: 1em; }
         body.admin-mode .btn {
-            background-color: var(--modern-primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px var(--modern-shadow);
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.9em;
-            padding: 12px 20px;
-            transition: background-color 0.3s, transform 0.2s;
+            background-color: var(--modern-primary); color: white; border: none; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-weight: 700; text-transform: uppercase; font-size: 0.9em;
         }
-        body.admin-mode .btn:hover:not([disabled]) {
-            background-color: var(--modern-secondary);
-            transform: translateY(-2px);
-        }
-        body.admin-mode .btn.danger {
-            background-color: var(--red-error);
-        }
-        body.admin-mode .btn.danger:hover {
-            background-color: #c0392b;
-        }
-        body.admin-mode .admin-section {
-            border-top: 1px solid var(--modern-border);
-        }
-        body.admin-mode #admin-report-view {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px var(--modern-shadow);
-        }
-        .admin-chart-container {
-            position: relative;
-            width: 95%;
-            max-width: 700px;
-            margin: 20px auto;
-            padding: 10px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px var(--modern-shadow);
-        }
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 0.9em;
-        }
-        .admin-table th, .admin-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--modern-border);
-        }
-        .admin-table th {
-            cursor: pointer;
-            background-color: var(--modern-primary);
-            color: white;
-            font-weight: 700;
-            transition: background-color 0.3s;
-        }
-        .admin-table th:hover {
-            background-color: var(--modern-secondary);
-        }
-        .admin-table tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-        .admin-table tr:hover {
-            background-color: #e8ecef;
-        }
+        body.admin-mode .btn:hover:not([disabled]) { background-color: var(--modern-secondary); transform: translateY(-1px); }
+        body.admin-mode .btn.danger { background-color: var(--red-error); }
+        body.admin-mode .btn.danger:hover { background-color: #c0392b; }
+        body.admin-mode .admin-section { border-top: 1px solid #e0e0e0; }
+        body.admin-mode #admin-report-view { background-color: #f8f9fa; padding: 15px; border-radius: 8px; }
+        .admin-chart-container { position: relative; width: 95%; max-width: 600px; margin: 20px auto; }
     </style>
 </head>
 <body>
@@ -285,185 +117,55 @@
         document.getElementById('challenge-offer-screen').innerHTML = `<h1>> MISIÓN PERFECTA</h1><p>Agente, has demostrado una maestría impecable. Se ha desbloqueado un nuevo nivel de desafío.</p><p>Las reglas cambian: las preguntas serán de máxima dificultad y el PRIMER ERROR terminará la misión. A cambio, la recompensa en XP será legendaria.</p><p>¿Aceptas el desafío?</p><div class="btn-grid"><button id="accept-challenge-btn" class="btn">> ACEPTAR DESAFÍO <</button><button id="decline-challenge-btn" class="btn danger">> VER PUNTAJE <</button></div>`;
         document.getElementById('end-screen').innerHTML = `<h2 id="end-title"></h2><div id="end-message"></div><div class="score-details" style="text-align: left; margin: 20px auto; max-width: 450px; background-color: rgba(0, 255, 65, 0.1); padding: 15px; border: 1px solid var(--retro-green); font-size: 0.8em;"><p id="final-grade-text"></p><p id="xp-earned-text"></p></div><div id="achievements-section" class="admin-section"><h3>> LOGROS DESBLOQUEADOS <</h3><div id="achievements-list"></div></div><div id="leaderboard" class="leaderboard admin-section"><h3 style="text-align: center; margin-bottom: 10px;">> MEJORES PUNTAJES (XP) <</h3><table id="leaderboard-table" style="width: 100%; border-collapse: collapse;"></table></div><button id="restart-btn" class="btn">> JUGAR DE NUEVO</button>`;
         document.getElementById('admin-login-screen').innerHTML = `<h1>Acceso de Profesor</h1><p>Ingrese contraseña:</p><input type="password" id="admin-password" class="input-field"><button id="admin-login-btn" class="btn">Ingresar</button><button id="admin-back-btn" class="btn danger" style="margin-top: 20px;">Volver</button>`;
-        document.getElementById('admin-dashboard-screen').innerHTML = `<h1>Panel de Análisis</h1><p>Seleccione un grado para ver el informe pedagógico.</p><div id="admin-grade-selection" class="btn-grid"></div><div class="admin-section"><button id="download-analytics-btn" class="btn">Descargar Datos (JSON)</button><button id="download-csv-btn" class="btn">Descargar Datos (CSV)</button><button id="reset-all-analytics-btn" class="btn danger">Resetear TODOS los Datos</button></div><button id="admin-logout-btn" class="btn" style="margin-top: 20px;">Salir</button>`;
-        document.getElementById('admin-report-screen').innerHTML = `<h1 id="admin-report-title"></h1><div id="admin-report-view"></div><button id="back-to-dashboard-btn" class="btn" style="margin-top: 20px;">Volver al Panel</button>`;
+        document.getElementById('admin-dashboard-screen').innerHTML = `<h1>Panel de Análisis</h1><p>Seleccione un grado para ver el informe pedagógico.</p><div id="admin-grade-selection" class="btn-grid"></div><div class="admin-section"><button id="download-analytics-btn" class="btn">Descargar Datos Crudos</button><button id="reset-all-analytics-btn" class="btn danger">Resetear TODOS los Datos</button></div><button id="admin-logout-btn" class="btn" style="margin-top: 20px;">Salir</button>`;
+        document.getElementById('admin-report-screen').innerHTML = `<h1 id="admin-report-title"></h1><div id="admin-report-view"></div><button id="back-to-dashboard-btn" class="btn" style="margin-top: 20px;">&lt; Volver al Panel</button>`;
     }
     injectHTML();
 
     document.addEventListener('DOMContentLoaded', () => {
-        const ADMIN_PASSWORD = "QUIMIPROFE2024";
-        const PREGUNTAS_POR_JUEGO = 10;
+        const ADMIN_PASSWORD = "QUIMIPROFE2024"; const PREGUNTAS_POR_JUEGO = 10;
         let DOM = {};
-        let myChart = null;
-        let bancoDePreguntas = {};
-        let preguntasDelGrado = [];
-        let preguntaActualIndex = 0;
-        let errores = 0;
-        let userName = "JUGADOR";
-        let currentGrade = 0;
-        let adminClickCount = 0;
-        let adminClickTimer = null;
-        let maxErrores = 3;
-        let aciertos = 0;
-        let xp = 0;
-        let enModoDesafio = false;
-        let idsPreguntasUsadas = new Set();
-        let aciertosModoNormal = 0;
-        let adminCharts = [];
+        function mapDOM() { DOM = { screens: { splash: document.getElementById('splash-screen'), name: document.getElementById('name-screen'), setup: document.getElementById('setup-screen'), game: document.getElementById('game-screen'), end: document.getElementById('end-screen'), adminLogin: document.getElementById('admin-login-screen'), adminDashboard: document.getElementById('admin-dashboard-screen'), adminReport: document.getElementById('admin-report-screen'), challengeOffer: document.getElementById('challenge-offer-screen') }, splashTitle: document.getElementById('splash-title'), continueBtn: document.getElementById('continue-btn'), nameInput: document.getElementById('name-input'), submitNameBtn: document.getElementById('submit-name-btn'), setupTitle: document.getElementById('setup-title'), setupGradeButtons: document.getElementById('setup-grade-buttons'), questionText: document.getElementById('question-text'), answerButtons: document.getElementById('answer-buttons'), chartContainer: document.getElementById('chart-container'), questionChart: document.getElementById('question-chart'), nextBtn: document.getElementById('next-btn'), restartBtn: document.getElementById('restart-btn'), questionCounter: document.getElementById('question-counter'), errorsStatus: document.getElementById('errors-status'), endTitle: document.getElementById('end-title'), endMessage: document.getElementById('end-message'), finalGradeText: document.getElementById('final-grade-text'), xpEarnedText: document.getElementById('xp-earned-text'), leaderboardTable: document.getElementById('leaderboard-table'), feedbackBox: document.getElementById('feedback-box'), achievementsList: document.getElementById('achievements-list'), adminPassword: document.getElementById('admin-password'), adminLoginBtn: document.getElementById('admin-login-btn'), adminBackBtn: document.getElementById('admin-back-btn'), adminGradeSelection: document.getElementById('admin-grade-selection'), downloadAnalyticsBtn: document.getElementById('download-analytics-btn'), resetAllAnalyticsBtn: document.getElementById('reset-all-analytics-btn'), adminLogoutBtn: document.getElementById('admin-logout-btn'), adminReportTitle: document.getElementById('admin-report-title'), adminReportView: document.getElementById('admin-report-view'), backToDashboardBtn: document.getElementById('back-to-dashboard-btn'), acceptChallengeBtn: document.getElementById('accept-challenge-btn'), declineChallengeBtn: document.getElementById('decline-challenge-btn'), }; }
+        let bancoDePreguntas = {}; let preguntasDelGrado = []; let preguntaActualIndex = 0; let errores = 0; let userName = "JUGADOR"; let currentGrade = 0; let adminClickCount = 0; let adminClickTimer = null; let maxErrores = 3; let aciertos = 0; let xp = 0; let enModoDesafio = false; let idsPreguntasUsadas = new Set(); let aciertosModoNormal = 0; let adminCharts = [];
 
-        // Mapeo de elementos del DOM
-        function mapDOM() {
-            DOM = {
-                screens: {
-                    splash: document.getElementById('splash-screen'),
-                    name: document.getElementById('name-screen'),
-                    setup: document.getElementById('setup-screen'),
-                    game: document.getElementById('game-screen'),
-                    end: document.getElementById('end-screen'),
-                    adminLogin: document.getElementById('admin-login-screen'),
-                    adminDashboard: document.getElementById('admin-dashboard-screen'),
-                    adminReport: document.getElementById('admin-report-screen'),
-                    challengeOffer: document.getElementById('challenge-offer-screen')
-                },
-                splashTitle: document.getElementById('splash-title'),
-                continueBtn: document.getElementById('continue-btn'),
-                nameInput: document.getElementById('name-input'),
-                submitNameBtn: document.getElementById('submit-name-btn'),
-                setupTitle: document.getElementById('setup-title'),
-                setupGradeButtons: document.getElementById('setup-grade-buttons'),
-                questionText: document.getElementById('question-text'),
-                answerButtons: document.getElementById('answer-buttons'),
-                chartContainer: document.getElementById('chart-container'),
-                questionChart: document.getElementById('question-chart'),
-                nextBtn: document.getElementById('next-btn'),
-                restartBtn: document.getElementById('restart-btn'),
-                questionCounter: document.getElementById('question-counter'),
-                errorsStatus: document.getElementById('errors-status'),
-                endTitle: document.getElementById('end-title'),
-                endMessage: document.getElementById('end-message'),
-                finalGradeText: document.getElementById('final-grade-text'),
-                xpEarnedText: document.getElementById('xp-earned-text'),
-                leaderboardTable: document.getElementById('leaderboard-table'),
-                feedbackBox: document.getElementById('feedback-box'),
-                achievementsList: document.getElementById('achievements-list'),
-                adminPassword: document.getElementById('admin-password'),
-                adminLoginBtn: document.getElementById('admin-login-btn'),
-                adminBackBtn: document.getElementById('admin-back-btn'),
-                adminGradeSelection: document.getElementById('admin-grade-selection'),
-                downloadAnalyticsBtn: document.getElementById('download-analytics-btn'),
-                downloadCsvBtn: document.getElementById('download-csv-btn'),
-                resetAllAnalyticsBtn: document.getElementById('reset-all-analytics-btn'),
-                adminLogoutBtn: document.getElementById('admin-logout-btn'),
-                adminReportTitle: document.getElementById('admin-report-title'),
-                adminReportView: document.getElementById('admin-report-view'),
-                backToDashboardBtn: document.getElementById('back-to-dashboard-btn'),
-                acceptChallengeBtn: document.getElementById('accept-challenge-btn'),
-                declineChallengeBtn: document.getElementById('decline-challenge-btn'),
-            };
-        }
-
-        // Gestión de pantallas
-        function showScreen(screenName) {
-            Object.values(DOM.screens).forEach(screen => screen.classList.remove('active'));
-            DOM.screens[screenName].classList.add('active');
-        }
-
-        // Gestión de analíticas
-        function getAnalytics() {
-            return {
-                errors: JSON.parse(localStorage.getItem('quimiAnalytics_errors') || '{}'),
-                views: JSON.parse(localStorage.getItem('quimiAnalytics_views') || '{}')
-            };
-        }
-
-        function trackIncorrectAnswer(questionId) {
-            let data = getAnalytics();
-            data.errors[questionId] = (data.errors[questionId] || 0) + 1;
-            localStorage.setItem('quimiAnalytics_errors', JSON.stringify(data.errors));
-        }
-
-        function trackQuestionView(questionId) {
-            let data = getAnalytics();
-            data.views[questionId] = (data.views[questionId] || 0) + 1;
-            localStorage.setItem('quimiAnalytics_views', JSON.stringify(data.views));
-        }
-
-        // Selección de respuesta
+        function showScreen(screenName) { Object.values(DOM.screens).forEach(screen => screen.classList.remove('active')); DOM.screens[screenName].classList.add('active'); }
+        function getAnalytics() { return { errors: JSON.parse(localStorage.getItem('quimiAnalytics_errors') || '{}'), views: JSON.parse(localStorage.getItem('quimiAnalytics_views') || '{}') }; }
+        function trackIncorrectAnswer(questionId) { let data = getAnalytics(); data.errors[questionId] = (data.errors[questionId] || 0) + 1; localStorage.setItem('quimiAnalytics_errors', JSON.stringify(data.errors)); }
+        function trackQuestionView(questionId) { let data = getAnalytics(); data.views[questionId] = (data.views[questionId] || 0) + 1; localStorage.setItem('quimiAnalytics_views', JSON.stringify(data.views)); }
+        
         function seleccionarRespuesta(e) {
-            const soundCorrect = document.getElementById('sound-correct');
-            const soundIncorrect = document.getElementById('sound-incorrect');
-            const botonSeleccionado = e.target;
-            const esCorrecto = botonSeleccionado.dataset.correcto === "true";
-            Array.from(DOM.answerButtons.children).forEach(button => {
-                button.disabled = true;
-                if (button.dataset.correcto) button.classList.add('correct');
-            });
-            if (esCorrecto) {
-                aciertos++;
-                try { soundCorrect.play(); } catch (e) { console.warn("Error al reproducir sonido correcto:", e); }
-            } else {
-                errores++;
-                botonSeleccionado.classList.add('incorrect');
-                const currentQuestion = preguntasDelGrado[preguntaActualIndex];
+            const botonSeleccionado = e.target; const esCorrecto = botonSeleccionado.dataset.correcto === "true";
+            Array.from(DOM.answerButtons.children).forEach(button => { button.disabled = true; if (button.dataset.correcto) button.classList.add('correct'); });
+            if (esCorrecto) { aciertos++; } else {
+                errores++; botonSeleccionado.classList.add('incorrect'); const currentQuestion = preguntasDelGrado[preguntaActualIndex];
                 if (currentQuestion.id) trackIncorrectAnswer(currentQuestion.id);
-                if (currentQuestion.retroalimentacion && currentQuestion.retroalimentacion.trim() !== "") {
-                    DOM.feedbackBox.innerHTML = `<strong>Pista del Profesor:</strong> ${currentQuestion.retroalimentacion}`;
-                    DOM.feedbackBox.classList.remove('hidden');
-                }
-                try { soundIncorrect.play(); } catch (e) { console.warn("Error al reproducir sonido incorrecto:", e); }
+                if (currentQuestion.retroalimentacion && currentQuestion.retroalimentacion.trim() !== "") { DOM.feedbackBox.innerHTML = `<strong>Pista del Profesor:</strong> ${currentQuestion.retroalimentacion}`; DOM.feedbackBox.classList.remove('hidden'); }
             }
             actualizarEstadoVisual();
             const isLastQuestionNormalMode = !enModoDesafio && preguntaActualIndex === PREGUNTAS_POR_JUEGO - 1;
-            if (errores >= maxErrores) {
-                const estadoFinal = { perdio: true, aciertos: aciertos, errores: errores, enDesafio: enModoDesafio, aciertosModoNormal: enModoDesafio ? aciertosModoNormal : aciertos };
-                setTimeout(() => terminarJuego(estadoFinal), 2000);
-            } else if (isLastQuestionNormalMode) {
-                const estadoFinal = { perdio: false, aciertos: aciertos, errores: errores, enDesafio: false };
-                setTimeout(() => verificarModoDesafio(estadoFinal), 1500);
-            } else {
-                DOM.nextBtn.classList.remove('hidden');
-            }
+            if (errores >= maxErrores) { const estadoFinal = { perdio: true, aciertos: aciertos, errores: errores, enDesafio: enModoDesafio, aciertosModoNormal: enModoDesafio ? aciertosModoNormal : aciertos }; setTimeout(() => terminarJuego(estadoFinal), 2000);
+            } else if (isLastQuestionNormalMode) { const estadoFinal = { perdio: false, aciertos: aciertos, errores: errores, enDesafio: false }; setTimeout(() => verificarModoDesafio(estadoFinal), 1500);
+            } else { DOM.nextBtn.classList.remove('hidden'); }
         }
-
-        // Verificación del modo desafío
-        function verificarModoDesafio(estadoFinal) {
-            if (estadoFinal.errores === 0) {
-                aciertosModoNormal = estadoFinal.aciertos;
-                showScreen('challengeOffer');
-            } else {
-                terminarJuego(estadoFinal);
-            }
-        }
-
-        // Iniciar modo desafío
+        function verificarModoDesafio(estadoFinal) { if (estadoFinal.errores === 0) { aciertosModoNormal = estadoFinal.aciertos; showScreen('challengeOffer'); } else { terminarJuego(estadoFinal); } }
         function iniciarModoDesafio() {
-            enModoDesafio = true;
-            maxErrores = 1;
-            errores = 0;
-            let todasLasPreguntas = [];
-            bancoDePreguntas[currentGrade].forEach(tema => todasLasPreguntas.push(...tema.preguntas));
+            enModoDesafio = true; maxErrores = 1; errores = 0;
+            let todasLasPreguntas = []; bancoDePreguntas[currentGrade].forEach(tema => todasLasPreguntas.push(...tema.preguntas));
             preguntasDelGrado = todasLasPreguntas.filter(q => q.dificultad >= 3 && !idsPreguntasUsadas.has(q.id));
             if (preguntasDelGrado.length === 0) {
                 alert("¡Felicidades! Has agotado todas las preguntas de máxima dificultad.");
                 const estadoFinal = { perdio: false, aciertos: aciertos, errores: 0, enDesafio: true, aciertosModoNormal: aciertosModoNormal };
-                terminarJuego(estadoFinal);
-                return;
+                terminarJuego(estadoFinal); return;
             }
-            preguntaActualIndex = 0;
-            mostrarSiguientePregunta();
+            preguntaActualIndex = 0; mostrarSiguientePregunta();
         }
-
-        // Terminar juego
         function terminarJuego(estadoFinal) {
             const aciertosBase = estadoFinal.enDesafio ? aciertosModoNormal : estadoFinal.aciertos;
             const notaFinal = 1 + 9 * (aciertosBase / PREGUNTAS_POR_JUEGO);
             let xpCalculado = estadoFinal.aciertos * 150 + (enModoDesafio ? (PREGUNTAS_POR_JUEGO + preguntaActualIndex + 1) : (preguntaActualIndex + 1)) * 50;
             const bonusErrores = [1000, 500, 200];
-            if (!estadoFinal.enDesafio && !estadoFinal.perdio) {
-                xpCalculado += bonusErrores[estadoFinal.errores] || 0;
-            } else if (estadoFinal.enDesafio && !estadoFinal.perdio) {
-                xpCalculado += 2000;
-            }
+            if (!estadoFinal.enDesafio && !estadoFinal.perdio) { xpCalculado += bonusErrores[estadoFinal.errores] || 0; } 
+            else if (estadoFinal.enDesafio && !estadoFinal.perdio) { xpCalculado += 2000; }
             DOM.endTitle.innerText = estadoFinal.perdio ? "FIN DE LA TRANSMISIÓN" : "MISIÓN CUMPLIDA";
             DOM.endMessage.innerText = estadoFinal.perdio ? `Límite de errores alcanzado, ${userName}. ¡Sigue intentando!` : `¡Felicitaciones, ${userName}! Has completado el reto.`;
             DOM.finalGradeText.innerHTML = `> <strong>NOTA DE PARTIDA: ${notaFinal.toFixed(1)} / 10.0</strong>`;
@@ -475,498 +177,92 @@
             displayLeaderboard(currentGrade);
             showScreen('end');
         }
-
-        // Inicialización
         function init() {
             mapDOM();
-            DOM.splashTitle.addEventListener('click', () => {
-                clearTimeout(adminClickTimer);
-                adminClickCount++;
-                if (adminClickCount === 5) {
-                    setAdminMode(true);
-                    showScreen('adminLogin');
-                    adminClickCount = 0;
-                }
-                adminClickTimer = setTimeout(() => { adminClickCount = 0; }, 1000);
-            });
-            DOM.adminLoginBtn.addEventListener('click', () => {
-                if (DOM.adminPassword.value === ADMIN_PASSWORD) {
-                    DOM.adminGradeSelection.innerHTML = '';
-                    Object.keys(bancoDePreguntas).sort((a, b) => parseInt(a) - parseInt(b)).forEach(grade => {
-                        const btn = document.createElement('button');
-                        btn.className = 'btn';
-                        btn.innerText = `Grado ${grade}°`;
-                        btn.onclick = () => {
-                            DOM.adminReportTitle.innerText = `Informe Pedagógico - Grado ${grade}°`;
-                            generarInforme(grade);
-                            showScreen('adminReport');
-                        };
-                        DOM.adminGradeSelection.appendChild(btn);
-                    });
-                    showScreen('adminDashboard');
-                    DOM.adminPassword.value = '';
-                } else {
-                    alert("Contraseña incorrecta.");
-                }
-            });
-            const exitAdmin = () => {
-                setAdminMode(false);
-                location.reload();
-            };
+            DOM.splashTitle.addEventListener('click', () => { clearTimeout(adminClickTimer); adminClickCount++; if (adminClickCount === 5) { setAdminMode(true); showScreen('adminLogin'); adminClickCount = 0; } adminClickTimer = setTimeout(() => { adminClickCount = 0; }, 1000); });
+            DOM.adminLoginBtn.addEventListener('click', () => { if (DOM.adminPassword.value === ADMIN_PASSWORD) { DOM.adminGradeSelection.innerHTML = ''; Object.keys(bancoDePreguntas).sort((a,b) => parseInt(a) - parseInt(b)).forEach(grade => { const btn = document.createElement('button'); btn.className = 'btn'; btn.innerText = `GRADO ${grade}°`; btn.onclick = () => { DOM.adminReportTitle.innerText = `Informe Pedagógico - Grado ${grade}°`; generarInforme(grade); showScreen('adminReport'); }; DOM.adminGradeSelection.appendChild(btn); }); showScreen('adminDashboard'); DOM.adminPassword.value = ''; } else { alert("Contraseña incorrecta."); } });
+            const exitAdmin = () => { setAdminMode(false); location.reload(); };
             DOM.adminBackBtn.addEventListener('click', exitAdmin);
             DOM.adminLogoutBtn.addEventListener('click', exitAdmin);
             DOM.backToDashboardBtn.addEventListener('click', () => showScreen('adminDashboard'));
-            DOM.downloadAnalyticsBtn.addEventListener('click', () => {
-                const data = JSON.stringify(getAnalytics(), null, 2);
-                if (data === '{"errors":{},"views":{}}') {
-                    alert("No hay datos de analíticas disponibles.");
-                    return;
-                }
-                const blob = new Blob([data], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'analiticas_quimica.json';
-                a.click();
-                URL.revokeObjectURL(url);
-            });
-            DOM.downloadCsvBtn.addEventListener('click', () => {
-                const { errors, views } = getAnalytics();
-                let csvContent = "ID Pregunta,Pregunta,Tema,Competencia,Errores,Vistas,Tasa de Error (%)\n";
-                const allQuestions = [];
-                Object.values(bancoDePreguntas).flat().forEach(tema => allQuestions.push(...tema.preguntas));
-                const questionMap = allQuestions.reduce((acc, q) => { if (q.id) acc[q.id] = q; return acc; }, {});
-                const errorList = Object.entries(errors).filter(([id]) => questionMap[id]).map(([id, count]) => ({
-                    id,
-                    errorCount: count,
-                    viewCount: views[id] || 0,
-                    errorRate: ((count / (views[id] || 1)) * 100).toFixed(1),
-                    question: questionMap[id].pregunta.replace(/"/g, '""'),
-                    tema: questionMap[id].tema,
-                    competencia: questionMap[id].competencia
-                }));
-                errorList.forEach(q => {
-                    csvContent += `"${q.id}","${q.question}","${q.tema}","${q.competencia}",${q.errorCount},${q.viewCount},${q.errorRate}\n`;
-                });
-                if (errorList.length === 0) {
-                    alert("No hay datos de analíticas disponibles.");
-                    return;
-                }
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'analiticas_quimica.csv';
-                a.click();
-                URL.revokeObjectURL(url);
-            });
-            DOM.resetAllAnalyticsBtn.addEventListener('click', () => {
-                if (confirm("¿Está seguro de borrar TODOS los datos de analíticas? Esta acción no se puede deshacer.")) {
-                    localStorage.removeItem('quimiAnalytics_errors');
-                    localStorage.removeItem('quimiAnalytics_views');
-                    alert("Datos de analíticas borrados exitosamente.");
-                }
-            });
+            DOM.downloadAnalyticsBtn.addEventListener('click', () => { const data = JSON.stringify(getAnalytics(), null, 2); if (data === '{"errors":{},"views":{}}') { alert("No hay datos."); return; } const blob = new Blob([data], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'analiticas_quimica.json'; a.click(); URL.revokeObjectURL(url); });
+            DOM.resetAllAnalyticsBtn.addEventListener('click', () => { if (confirm("¿Borrar TODOS los datos de analíticas?")) { localStorage.removeItem('quimiAnalytics_errors'); localStorage.removeItem('quimiAnalytics_views'); alert("Datos borrados."); } });
             DOM.continueBtn.addEventListener('click', () => showScreen('name'));
-            DOM.submitNameBtn.addEventListener('click', () => {
-                const name = DOM.nameInput.value.trim().toUpperCase();
-                if (name) userName = name;
-                DOM.setupTitle.innerText = `> BIENVENIDO, ${userName}`;
-                showScreen('setup');
-            });
-            DOM.nextBtn.addEventListener('click', () => {
-                preguntaActualIndex++;
-                mostrarSiguientePregunta();
-            });
-            DOM.restartBtn.addEventListener('click', () => {
-                resetearEstadoJuego();
-                showScreen('setup');
-            });
-            DOM.acceptChallengeBtn.addEventListener('click', () => {
-                showScreen('game');
-                iniciarModoDesafio();
-            });
-            DOM.declineChallengeBtn.addEventListener('click', () => {
-                const estadoFinal = { perdio: false, aciertos: aciertosModoNormal, errores: 0, enDesafio: false, aciertosModoNormal: aciertosModoNormal };
-                terminarJuego(estadoFinal);
-            });
+            DOM.submitNameBtn.addEventListener('click', () => { const name = DOM.nameInput.value.trim().toUpperCase(); if (name) userName = name; DOM.setupTitle.innerText = `> BIENVENIDO, ${userName}`; showScreen('setup'); });
+            DOM.nextBtn.addEventListener('click', () => { preguntaActualIndex++; mostrarSiguientePregunta(); });
+            DOM.restartBtn.addEventListener('click', () => { showScreen('setup'); });
+            DOM.acceptChallengeBtn.addEventListener('click', () => { showScreen('game'); iniciarModoDesafio(); });
+            DOM.declineChallengeBtn.addEventListener('click', () => { const estadoFinal = { perdio: false, aciertos: aciertosModoNormal, errores: 0, enDesafio: false, aciertosModoNormal: aciertosModoNormal }; terminarJuego(estadoFinal); });
             main();
         }
-
-        // Carga inicial
         async function main() {
             const lines = ['splash-title', 'line-1', 'line-2', 'line-3', 'line-4', 'line-5', 'line-6', 'line-7', 'line-8', 'line-9', 'loading-text'];
-            for (const lineId of lines) {
-                const element = document.getElementById(lineId);
-                if (element) {
-                    await new Promise(resolve => setTimeout(resolve, lineId === 'splash-title' ? 500 : 200));
-                    element.style.visibility = 'visible';
-                }
-            }
+            for (const lineId of lines) { const element = document.getElementById(lineId); if(element) { await new Promise(resolve => setTimeout(resolve, lineId === 'splash-title' ? 500 : 200)); element.style.visibility = 'visible'; } }
             try {
-                const response = await fetch('preguntas.json');
-                if (!response.ok) throw new Error(`HTTP error, status = ${response.status}`);
+                const response = await fetch('preguntas.json'); if (!response.ok) throw new Error(`HTTP error, status = ${response.status}`);
                 bancoDePreguntas = await response.json();
-                DOM.setupGradeButtons.innerHTML = '';
-                const grados = Object.keys(bancoDePreguntas).sort((a, b) => parseInt(a) - parseInt(b));
-                grados.forEach(grade => {
-                    const btn = document.createElement('button');
-                    btn.className = 'btn grade-btn';
-                    btn.dataset.grade = grade;
-                    btn.innerText = `GRADO ${grade}°`;
-                    btn.addEventListener('click', () => {
-                        currentGrade = grade;
-                        seleccionarGradoYEmpezar(currentGrade);
-                    });
-                    DOM.setupGradeButtons.appendChild(btn);
-                });
-                const loadingText = document.getElementById('loading-text');
-                loadingText.innerText = '> CARGA COMPLETA.';
-                loadingText.classList.remove('blinking-cursor');
-                DOM.continueBtn.classList.remove('hidden');
-            } catch (error) {
-                console.error("Error al cargar preguntas.json:", error);
-                const loadingText = document.getElementById('loading-text');
-                loadingText.innerText = '> ERROR DE CARGA. VERIFIQUE `preguntas.json`.';
-                loadingText.style.color = 'var(--red-error)';
-            }
+                DOM.setupGradeButtons.innerHTML = ''; const grados = Object.keys(bancoDePreguntas).sort((a, b) => parseInt(a) - parseInt(b));
+                grados.forEach(grade => { const btn = document.createElement('button'); btn.className = 'btn grade-btn'; btn.dataset.grade = grade; btn.innerText = `GRADO ${grade}°`; btn.addEventListener('click', () => { currentGrade = grade; seleccionarGradoYEmpezar(currentGrade); }); DOM.setupGradeButtons.appendChild(btn); });
+                const loadingText = document.getElementById('loading-text'); loadingText.innerText = '> CARGA COMPLETA.'; loadingText.classList.remove('blinking-cursor'); DOM.continueBtn.classList.remove('hidden');
+            } catch (error) { console.error("Error al cargar preguntas.json:", error); const loadingText = document.getElementById('loading-text'); loadingText.innerText = '> ERROR DE CARGA. VERIFIQUE `preguntas.json`.'; loadingText.style.color = 'var(--red-error)'; }
         }
-
-        // Selección de grado y comienzo del juego
+        
         function seleccionarGradoYEmpezar(grado) {
-            if (!bancoDePreguntas[grado]) {
-                alert(`El grado ${grado}° no está disponible. Por favor, verifique el archivo preguntas.json.`);
-                return;
-            }
-            let todasLasPreguntas = [];
-            bancoDePreguntas[grado].forEach(tema => todasLasPreguntas.push(...tema.preguntas));
-            if (todasLasPreguntas.length < PREGUNTAS_POR_JUEGO) {
-                alert(`No hay suficientes preguntas para grado ${grado}° (${todasLasPreguntas.length}/${PREGUNTAS_POR_JUEGO}). Por favor, complete el archivo preguntas.json.`);
-                return;
-            }
-            resetearEstadoJuego();
+            let todasLasPreguntas = []; if (bancoDePreguntas[grado]) { bancoDePreguntas[grado].forEach(tema => todasLasPreguntas.push(...tema.preguntas)); }
+            if (todasLasPreguntas.length < PREGUNTAS_POR_JUEGO) { alert(`No hay suficientes preguntas para grado ${grado}° (${todasLasPreguntas.length}/${PREGUNTAS_POR_JUEGO}). Profe, ¡a completar el JSON!`); return; }
             const shuffle = (arr) => arr.sort(() => 0.5 - Math.random());
-            const preguntasBarajadas = shuffle([...todasLasPreguntas]);
+            const preguntasBarajadas = shuffle(todasLasPreguntas);
             preguntasDelGrado = preguntasBarajadas.slice(0, PREGUNTAS_POR_JUEGO);
             preguntasDelGrado.sort((a, b) => a.dificultad - b.dificultad);
-            preguntasDelGrado.forEach(q => idsPreguntasUsadas.add(q.id));
+            idsPreguntasUsadas.clear(); preguntasDelGrado.forEach(q => idsPreguntasUsadas.add(q.id));
             iniciarJuego();
         }
 
-        // Reinicio del estado del juego
-        function resetearEstadoJuego() {
-            errores = 0;
-            aciertos = 0;
-            xp = 0;
-            preguntaActualIndex = 0;
-            maxErrores = 3;
-            enModoDesafio = false;
-            aciertosModoNormal = 0;
-            idsPreguntasUsadas.clear();
-            preguntasDelGrado = [];
-            if (myChart) {
-                myChart.destroy();
-                myChart = null;
-            }
-        }
-
-        // Gestión de logros
-        function checkAchievements(notaFinal, erroresNormal, enDesafio, gano) {
-            const achievements = [];
-            if (erroresNormal === 0 && !enDesafio) achievements.push({ icon: '🏅', text: 'Misión Perfecta' });
-            if (erroresNormal === 1) achievements.push({ icon: '🎯', text: 'Precisión Quirúrgica' });
-            if (notaFinal >= 9.0) achievements.push({ icon: '🏆', text: 'Rango Maestro' });
-            if (enDesafio && gano) achievements.push({ icon: '🔥', text: 'Leyenda de la Consola' });
-            return achievements;
-        }
-
-        function displayAchievements(achievements) {
-            const section = document.getElementById('achievements-section');
-            if (achievements.length === 0) {
-                section.classList.add('hidden');
-            } else {
-                section.classList.remove('hidden');
-                DOM.achievementsList.innerHTML = achievements.map(ach => `<span class="achievement"><span class="icon">${ach.icon}</span> ${ach.text}</span>`).join('');
-            }
-        }
-
-        // Modo admin
-        function setAdminMode(isAdmin) {
-            if (isAdmin) {
-                document.body.classList.add('admin-mode');
-            } else {
-                document.body.classList.remove('admin-mode');
-            }
-        }
-
-        // Generación de informe pedagógico
+        function checkAchievements(notaFinal, erroresNormal, enDesafio, gano) { const achievements = []; if (erroresNormal === 0 && !enDesafio) achievements.push({ icon: '🏅', text: 'Misión Perfecta' }); if (erroresNormal === 1) achievements.push({ icon: '🎯', text: 'Precisión Quirúrgica' }); if (notaFinal >= 9.0) achievements.push({ icon: '🏆', text: 'Rango Maestro' }); if (enDesafio && gano) achievements.push({ icon: '🔥', text: 'Leyenda de la Consola' }); return achievements; }
+        function displayAchievements(achievements) { const section = document.getElementById('achievements-section'); if (achievements.length === 0) { section.classList.add('hidden'); } else { section.classList.remove('hidden'); DOM.achievementsList.innerHTML = achievements.map(ach => `<span class="achievement"><span class="icon">${ach.icon}</span> ${ach.text}</span>`).join(''); } }
+        function setAdminMode(isAdmin) { if (isAdmin) document.body.classList.add('admin-mode'); else document.body.classList.remove('admin-mode'); }
         function generarInforme(grado) {
-            adminCharts.forEach(chart => chart.destroy());
-            adminCharts = [];
+            adminCharts.forEach(chart => chart.destroy()); adminCharts = [];
             const { errors, views } = getAnalytics();
-            const allQuestions = [];
-            if (bancoDePreguntas[grado]) {
-                bancoDePreguntas[grado].forEach(tema => allQuestions.push(...tema.preguntas));
-            }
-            const questionMap = allQuestions.reduce((acc, q) => { if (q.id) acc[q.id] = q; return acc; }, {});
-            const errorList = Object.entries(errors)
-                .filter(([id]) => questionMap[id])
-                .map(([id, count]) => ({
-                    id,
-                    errorCount: count,
-                    viewCount: views[id] || 0,
-                    errorRate: ((count / (views[id] || 1)) * 100).toFixed(1),
-                    question: questionMap[id].pregunta,
-                    tema: questionMap[id].tema,
-                    competencia: questionMap[id].competencia
-                }))
-                .sort((a, b) => b.errorRate - a.errorRate);
-
-            DOM.adminReportView.innerHTML = '';
-            if (errorList.length === 0) {
-                DOM.adminReportView.innerHTML = "<div class='admin-card'><p>No hay datos de analíticas disponibles para este grado.</p></div>";
-                return;
-            }
-
-            let reportHTML = `<div class="admin-card"><h3>Rendimiento por Competencia</h3><div class="admin-chart-container"><canvas id="competencyChart"></canvas></div></div>`;
+            const allQuestions = []; if(bancoDePreguntas[grado]) bancoDePreguntas[grado].forEach(tema => allQuestions.push(...tema.preguntas));
+            const questionMap = allQuestions.reduce((acc, q) => { if(q.id) acc[q.id] = q; return acc; }, {});
+            const errorList = Object.entries(errors).filter(([id]) => questionMap[id]).map(([id, count]) => ({ id, errorCount: count, viewCount: views[id] || 0, errorRate: ((count / (views[id] || 1)) * 100).toFixed(1), question: questionMap[id].pregunta, tema: questionMap[id].tema, competencia: questionMap[id].competencia })).sort((a, b) => b.errorRate - a.errorRate);
+            DOM.adminReportView.innerHTML = ''; if (errorList.length === 0) { DOM.adminReportView.innerHTML = "<div class='admin-card'><p>No hay datos de errores para este grado.</p></div>"; return; }
+            let reportHTML = `<div class="admin-card"><h3>Rendimiento por Competencia</h3><div class="admin-chart-container" style="max-height: 250px;"><canvas id="competencyChart"></canvas></div></div>`;
             const temas = errorList.reduce((acc, err) => { acc[err.tema] = (acc[err.tema] || 0) + err.errorCount; return acc; }, {});
             const sortedTemas = Object.entries(temas).sort((a, b) => b[1] - a[1]);
-            reportHTML += `<div class="admin-card"><h3>Temas a Reforzar</h3><div class="admin-chart-container"><canvas id="topicChart"></canvas></div></div>`;
-            
-            // Gráfico de evolución de rendimiento por estudiante
-            const leaderboard = getLeaderboard(grado);
-            const studentScores = leaderboard.reduce((acc, entry) => {
-                acc[entry.name] = acc[entry.name] || [];
-                acc[entry.name].push(entry.score);
-                return acc;
-            }, {});
-            reportHTML += `<div class="admin-card"><h3>Evolución de Rendimiento por Estudiante</h3><div class="admin-chart-container"><canvas id="studentProgressChart"></canvas></div></div>`;
-
-            // Tabla detallada de preguntas fallidas
-            reportHTML += `<div class="admin-card"><h3>Análisis Detallado de Preguntas</h3><table class="admin-table" id="errorTable"><thead><tr><th data-sort="id">ID</th><th data-sort="question">Pregunta</th><th data-sort="tema">Tema</th><th data-sort="competencia">Competencia</th><th data-sort="errorCount">Errores</th><th data-sort="viewCount">Vistas</th><th data-sort="errorRate">Tasa de Error (%)</th></tr></thead><tbody></tbody></table></div>`;
-            DOM.adminReportView.innerHTML = reportHTML;
-
-            // Gráfico de competencias
-            adminCharts.push(new Chart(document.getElementById('competencyChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(errorList.reduce((acc, err) => { acc[err.competencia] = (acc[err.competencia] || 0) + err.errorCount; return acc; }, {})),
-                    datasets: [{
-                        data: Object.values(errorList.reduce((acc, err) => { acc[err.competencia] = (acc[err.competencia] || 0) + err.errorCount; return acc; }, {})),
-                        backgroundColor: ['#1a73e8', '#34c759', '#ff9500', '#ff3b30'],
-                        borderColor: '#ffffff',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { font: { family: 'Roboto', size: 12 }, color: 'var(--modern-text)' } },
-                        title: { display: true, text: 'Distribución de Errores por Competencia', color: 'var(--modern-text)', font: { family: 'Roboto', size: 16, weight: 'bold' } }
-                    },
-                    animation: { duration: 1000, easing: 'easeOutQuart' }
-                }
-            }));
-
-            // Gráfico de temas
-            adminCharts.push(new Chart(document.getElementById('topicChart'), {
-                type: 'bar',
-                data: {
-                    labels: sortedTemas.map(t => t[0]),
-                    datasets: [{
-                        label: 'Número de Errores',
-                        data: sortedTemas.map(t => t[1]),
-                        backgroundColor: 'rgba(26, 115, 232, 0.7)',
-                        borderColor: 'rgba(26, 115, 232, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        title: { display: true, text: 'Errores por Tema', color: 'var(--modern-text)', font: { family: 'Roboto', size: 16, weight: 'bold' } }
-                    },
-                    scales: {
-                        x: { ticks: { color: 'var(--modern-text)', font: { family: 'Roboto', size: 12 } }, grid: { color: 'var(--modern-border)' } },
-                        y: { ticks: { color: 'var(--modern-text)', font: { family: 'Roboto', size: 12 } }, grid: { display: false } }
-                    },
-                    animation: { duration: 1000, easing: 'easeOutQuart' }
-                }
-            }));
-
-            // Gráfico de progreso de estudiantes
-            adminCharts.push(new Chart(document.getElementById('studentProgressChart'), {
-                type: 'line',
-                data: {
-                    labels: Array.from({ length: Math.max(...Object.values(studentScores).map(scores => scores.length)) }, (_, i) => `Partida ${i + 1}`),
-                    datasets: Object.keys(studentScores).map((name, index) => ({
-                        label: name,
-                        data: studentScores[name],
-                        borderColor: ['#1a73e8', '#34c759', '#ff9500', '#ff3b30', '#5856d6'][index % 5],
-                        backgroundColor: ['rgba(26, 115, 232, 0.2)', 'rgba(52, 199, 89, 0.2)', 'rgba(255, 149, 0, 0.2)', 'rgba(255, 59, 48, 0.2)', 'rgba(88, 86, 214, 0.2)'][index % 5],
-                        fill: true,
-                        tension: 0.4
-                    }))
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { family: 'Roboto', size: 12 }, color: 'var(--modern-text)' } },
-                        title: { display: true, text: 'Progreso de Estudiantes (XP por Partida)', color: 'var(--modern-text)', font: { family: 'Roboto', size: 16, weight: 'bold' } }
-                    },
-                    scales: {
-                        x: { ticks: { color: 'var(--modern-text)', font: { family: 'Roboto', size: 12 } }, grid: { color: 'var(--modern-border)' } },
-                        y: { ticks: { color: 'var(--modern-text)', font: { family: 'Roboto', size: 12 } }, grid: { color: 'var(--modern-border)' }, title: { display: true, text: 'Puntaje (XP)', color: 'var(--modern-text)', font: { family: 'Roboto', size: 12 } } }
-                    },
-                    animation: { duration: 1000, easing: 'easeOutQuart' }
-                }
-            }));
-
-            // Tabla interactiva
-            const tbody = document.querySelector('#errorTable tbody');
-            errorList.forEach(q => {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>${q.id}</td><td>${q.question.substring(0, 50)}${q.question.length > 50 ? '...' : ''}</td><td>${q.tema}</td><td>${q.competencia}</td><td>${q.errorCount}</td><td>${q.viewCount}</td><td>${q.errorRate}</td>`;
-                tbody.appendChild(row);
-            });
-
-            // Ordenamiento de tabla
-            const headers = document.querySelectorAll('#errorTable th');
-            headers.forEach(header => {
-                header.addEventListener('click', () => {
-                    const sortKey = header.dataset.sort;
-                    const isAsc = header.classList.toggle('asc');
-                    errorList.sort((a, b) => {
-                        const valA = a[sortKey];
-                        const valB = b[sortKey];
-                        if (sortKey === 'errorRate' || sortKey === 'errorCount' || sortKey === 'viewCount') {
-                            return isAsc ? valA - valB : valB - valA;
-                        }
-                        return isAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
-                    });
-                    tbody.innerHTML = '';
-                    errorList.forEach(q => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `<td>${q.id}</td><td>${q.question.substring(0, 50)}${q.question.length > 50 ? '...' : ''}</td><td>${q.tema}</td><td>${q.competencia}</td><td>${q.errorCount}</td><td>${q.viewCount}</td><td>${q.errorRate}</td>`;
-                        tbody.appendChild(row);
-                    });
-                });
-            });
+            reportHTML += `<div class="admin-card"><h3>Temas a Reforzar</h3><div class="admin-chart-container" style="position: relative; height: 40vh; width: 80vw; max-width: 100%;"><canvas id="topicChart"></canvas></div></div>`;
+            const topQuestions = errorList.slice(0, 5);
+            reportHTML += `<div class="admin-card"><h3>Análisis de Ítems (Top 5 por % Error)</h3>`;
+            topQuestions.forEach((q, i) => { reportHTML += `<p><strong>${i+1}. ${q.question.substring(0, 50)}...</strong><br><small>Errores: ${q.errorCount} | Vistas: ${q.viewCount} | Tasa de Error: ${q.errorRate}%</small></p>`; });
+            reportHTML += `</div>`; DOM.adminReportView.innerHTML = reportHTML;
+            const competencias = errorList.reduce((acc, err) => { acc[err.competencia] = (acc[err.competencia] || 0) + err.errorCount; return acc; }, {});
+            adminCharts.push(new Chart(document.getElementById('competencyChart'), { type: 'doughnut', data: { labels: Object.keys(competencias), datasets: [{ data: Object.values(competencias), backgroundColor: ['#3498db', '#e74c3c', '#f1c40f', '#2ecc71'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } }));
+            adminCharts.push(new Chart(document.getElementById('topicChart'), { type: 'bar', data: { labels: sortedTemas.map(t => t[0]), datasets: [{ label: 'Nº de Errores', data: sortedTemas.map(t => t[1]), backgroundColor: 'rgba(52, 152, 219, 0.7)' }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } }));
         }
-
-        // Actualización del estado visual
-        function actualizarEstadoVisual() {
-            DOM.questionCounter.innerText = enModoDesafio ? `DESAFÍO: ${preguntaActualIndex + 1}` : `PREGUNTA: ${preguntaActualIndex + 1}/${PREGUNTAS_POR_JUEGO}`;
-            DOM.errorsStatus.innerText = `ERRORES: ${errores}/${maxErrores}`;
-        }
-
-        // Reseteo del estado visual
-        function resetearEstadoVisual() {
-            if (myChart) {
-                myChart.destroy();
-                myChart = null;
-            }
-            DOM.chartContainer.classList.add('hidden');
-            DOM.nextBtn.classList.add('hidden');
-            DOM.feedbackBox.classList.add('hidden');
-            while (DOM.answerButtons.firstChild) DOM.answerButtons.removeChild(DOM.answerButtons.firstChild);
-        }
-
-        // Iniciar juego
-        function iniciarJuego() {
-            showScreen('game');
-            DOM.nextBtn.classList.add('hidden');
-            mostrarSiguientePregunta();
-        }
-
-        // Mostrar siguiente pregunta
+        function actualizarEstadoVisual() { DOM.questionCounter.innerText = enModoDesafio ? `DESAFÍO: ${preguntaActualIndex + 1}` : `PREGUNTA: ${preguntaActualIndex + 1}/${PREGUNTAS_POR_JUEGO}`; DOM.errorsStatus.innerText = `ERRORES: ${errores}/${maxErrores}`; }
+        function resetearEstadoVisual() { if(myChart) { myChart.destroy(); myChart = null; } DOM.chartContainer.classList.add('hidden'); DOM.nextBtn.classList.add('hidden'); DOM.feedbackBox.classList.add('hidden'); while (DOM.answerButtons.firstChild) DOM.answerButtons.removeChild(DOM.answerButtons.firstChild); }
+        function iniciarJuego() { errores = 0; aciertos = 0; xp = 0; preguntaActualIndex = 0; maxErrores = 3; enModoDesafio = false; aciertosModoNormal = 0; showScreen('game'); DOM.nextBtn.classList.add('hidden'); mostrarSiguientePregunta(); }
         function mostrarSiguientePregunta() {
             resetearEstadoVisual();
-            if (preguntaActualIndex < preguntasDelGrado.length) {
-                const pregunta = preguntasDelGrado[preguntaActualIndex];
-                if (pregunta.id) trackQuestionView(pregunta.id);
-                mostrarPregunta(pregunta);
-            } else {
-                const estadoFinal = { perdio: false, aciertos: aciertos, errores: errores, enDesafio: enModoDesafio, aciertosModoNormal: aciertosModoNormal };
-                terminarJuego(estadoFinal);
-            }
+            if (preguntaActualIndex < preguntasDelGrado.length) { mostrarPregunta(preguntasDelGrado[preguntaActualIndex]); } 
+            else { const estadoFinal = { perdio: false, aciertos: aciertos, errores: errores, enDesafio: enModoDesafio, aciertosModoNormal: aciertosModoNormal }; terminarJuego(estadoFinal); }
         }
-
-        // Mostrar pregunta
         function mostrarPregunta(pregunta) {
             DOM.questionText.innerText = pregunta.pregunta;
             if (pregunta.grafico) {
                 DOM.chartContainer.classList.remove('hidden');
-                const retroOptions = {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: 'var(--retro-green)', font: { family: "'Press Start 2P', cursive" } } }
-                    },
-                    scales: {
-                        y: {
-                            grid: { color: 'rgba(0, 255, 65, 0.2)' },
-                            ticks: { color: 'var(--retro-green)', font: { family: "'Press Start 2P', cursive", size: 10 } },
-                            title: { display: pregunta.grafico.opciones?.scales?.y?.title?.display, text: pregunta.grafico.opciones?.scales?.y?.title?.text, color: 'var(--retro-green)', font: { family: "'Press Start 2P', cursive" } }
-                        },
-                        x: {
-                            grid: { color: 'rgba(0, 255, 65, 0.2)' },
-                            ticks: { color: 'var(--retro-green)', font: { family: "'Press Start 2P', cursive", size: 10 } },
-                            title: { display: pregunta.grafico.opciones?.scales?.x?.title?.display, text: pregunta.grafico.opciones?.scales?.x?.title?.text, color: 'var(--retro-green)', font: { family: "'Press Start 2P', cursive" } }
-                        }
-                    }
-                };
-                const chartConfig = {
-                    type: pregunta.grafico.tipo,
-                    data: pregunta.grafico.datos,
-                    options: { ...pregunta.grafico.opciones, ...retroOptions }
-                };
+                const retroOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: 'var(--retro-green)', font: { family: "'Press Start 2P', cursive" } } } }, scales: { y: { grid: { color: 'rgba(0, 255, 65, 0.2)' }, ticks: { color: 'var(--retro-green)', font: { family: "'Press Start 2P', cursive", size: 10 } }, title: { display: pregunta.grafico.opciones?.scales?.y?.title?.display, text: pregunta.grafico.opciones?.scales?.y?.title?.text, color: 'var(--retro-green)', font: { family: "'Press Start 2P', cursive" } } }, x: { grid: { color: 'rgba(0, 255, 65, 0.2)' }, ticks: { color: 'var(--retro-green)', font: { family: "'Press Start 2P', cursive", size: 10 } }, title: { display: pregunta.grafico.opciones?.scales?.x?.title?.display, text: pregunta.grafico.opciones?.scales?.x?.title?.text, color: 'var(--retro-green)', font: { family: "'Press Start 2P', cursive" } } } } };
+                const chartConfig = { type: pregunta.grafico.tipo, data: pregunta.grafico.datos, options: { ...pregunta.grafico.opciones, ...retroOptions } };
                 myChart = new Chart(DOM.questionChart, chartConfig);
             }
-            pregunta.opciones.forEach(opcion => {
-                const button = document.createElement('button');
-                button.innerText = opcion.texto;
-                button.classList.add('btn');
-                if (opcion.correcto) button.dataset.correcto = true;
-                button.addEventListener('click', seleccionarRespuesta);
-                DOM.answerButtons.appendChild(button);
-            });
+            pregunta.opciones.forEach(opcion => { const button = document.createElement('button'); button.innerText = opcion.texto; button.classList.add('btn'); if (opcion.correcto) button.dataset.correcto = true; button.addEventListener('click', seleccionarRespuesta); DOM.answerButtons.appendChild(button); });
             actualizarEstadoVisual();
         }
-
-        // Gestión de leaderboard
-        function getLeaderboard(grade) {
-            const leaderboardJSON = localStorage.getItem(`leaderboard_grade_${grade}`);
-            return leaderboardJSON ? JSON.parse(leaderboardJSON) : [];
-        }
-
-        function saveToLeaderboard(grade, name, score) {
-            let leaderboard = getLeaderboard(grade);
-            leaderboard.push({ name, score });
-            leaderboard.sort((a, b) => b.score - a.score);
-            leaderboard = leaderboard.slice(0, 5);
-            localStorage.setItem(`leaderboard_grade_${grade}`, JSON.stringify(leaderboard));
-        }
-
-        function displayLeaderboard(grade) {
-            const leaderboard = DOM.leaderboardTable;
-            const scores = getLeaderboard(grade);
-            leaderboard.innerHTML = '';
-            if (scores.length === 0) {
-                leaderboard.innerHTML = `<tr><td>Aún no hay puntajes. ¡Sé el primero!</td></tr>`;
-            } else {
-                scores.forEach((entry, index) => {
-                    const row = `<tr><td>${index + 1}. ${entry.name}</td><td>${entry.score} XP</td></tr>`;
-                    leaderboard.innerHTML += row;
-                });
-            }
-        }
-
+        function getLeaderboard(grade) { const leaderboardJSON = localStorage.getItem(`leaderboard_grade_${grade}`); return leaderboardJSON ? JSON.parse(leaderboardJSON) : []; }
+        function saveToLeaderboard(grade, name, score) { let leaderboard = getLeaderboard(grade); leaderboard.push({ name, score }); leaderboard.sort((a, b) => b.score - a.score); leaderboard = leaderboard.slice(0, 5); localStorage.setItem(`leaderboard_grade_${grade}`, JSON.stringify(leaderboard)); }
+        function displayLeaderboard(grade) { const leaderboard = DOM.leaderboardTable; const scores = getLeaderboard(grade); leaderboard.innerHTML = ''; if (scores.length === 0) { leaderboard.innerHTML = `<tr><td>Aún no hay puntajes. ¡Sé el primero!</td></tr>`; } else { scores.forEach((entry, index) => { const row = `<tr><td>${index + 1}. ${entry.name}</td><td>${entry.score} XP</td></tr>`; leaderboard.innerHTML += row; }); } }
+        
         init();
     });
     </script>
