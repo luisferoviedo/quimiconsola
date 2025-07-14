@@ -249,28 +249,68 @@
         function displayAchievements(achievements) { const section = document.getElementById('achievements-section'); if (achievements.length === 0) { section.classList.add('hidden'); } else { section.classList.remove('hidden'); DOM.achievementsList.innerHTML = achievements.map(ach => `<span class="achievement"><span class="icon">${ach.icon}</span> ${ach.text}</span>`).join(''); } }
         function setAdminMode(isAdmin) { if (isAdmin) document.body.classList.add('admin-mode'); else document.body.classList.remove('admin-mode'); }
         function generarInforme(grado) {
-            adminCharts.forEach(chart => chart.destroy());
-            adminCharts = [];
-            const { errors, views } = getAnalytics();
-            const allQuestions = [];
-            if (bancoDePreguntas[grado]) bancoDePreguntas[grado].forEach(tema => allQuestions.push(...tema.preguntas));
-            const questionMap = allQuestions.reduce((acc, q) => { if(q.id) acc[q.id] = q; return acc; }, {});
-            const errorList = Object.entries(errors).filter(([id]) => questionMap[id]).map(([id, count]) => ({ id, errorCount: count, viewCount: views[id] || 0, errorRate: ((count / (views[id] || 1)) * 100).toFixed(1), question: questionMap[id].pregunta, tema: questionMap[id].tema, competencia: questionMap[id].competencia })).sort((a, b) => b.errorRate - a.errorRate);
-            DOM.adminReportView.innerHTML = '';
-            if (errorList.length === 0) {
-                DOM.adminReportView.innerHTML = "<div class='admin-card'><p>No hay datos de errores para este grado.</p></div>";
-                return;
-            }
-            let reportHTML = `<div class="admin-card"><h3>Rendimiento por Competencia</h3><div class="admin-chart-container" style="max-height: 250px;"><canvas id="competencyChart"></canvas></div></div>`;
-            const competencias = errorList.reduce((acc, err) => { acc[err.competencia] = (acc[err.competencia] || 0) + err.errorCount; return acc; }, {});
-            reportHTML += `<div class="admin-card"><h3>Temas a Reforzar</h3><div class="admin-chart-container" style="position: relative; height: 40vh; width: 80vw; max-width: 100%;"><canvas id="topicChart"></canvas></div></div>`;
-            const topQuestions = errorList.slice(0, 5);
-            reportHTML += `<div class="admin-card"><h3>Análisis de Ítems (Top 5 por % Error)</h3>`;
-            topQuestions.forEach((q, i) => { reportHTML += `<p><strong>${i+1}. ${q.question.substring(0, 50)}...</strong><br><small>Errores: ${q.errorCount} | Vistas: ${q.viewCount} | Tasa de Error: ${q.errorRate}%</small></p>`; });
-            reportHTML += `</div>`;
-            DOM.adminReportView.innerHTML = reportHTML;
-            adminCharts.push(new Chart(document.getElementById('competencyChart'), { type: 'doughnut', data: { labels: Object.keys(competencias), datasets: [{ data: Object.values(competencias), backgroundColor: ['#3498db', '#e74c3c', '#f1c40f', '#2ecc71'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } }));
-            adminCharts.push(new Chart(document.getElementById('topicChart'), { type: 'bar', data: { labels: Object.keys(temas).sort((a, b) => temas[b] - temas[a]), datasets: [{ label: 'Nº de Errores', data: Object.values(temas), backgroundColor: 'rgba(52, 152, 219, 0.7)' }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } }));
+    console.log('Generando informe para grado:', grado);
+    adminCharts.forEach(chart => chart.destroy());
+    adminCharts = [];
+    const { errors, views } = getAnalytics();
+    console.log('Datos de analíticas:', { errors, views });
+    const allQuestions = [];
+    if (bancoDePreguntas[grado]) bancoDePreguntas[grado].forEach(tema => allQuestions.push(...tema.preguntas));
+    console.log('Preguntas totales para grado:', allQuestions.length);
+    const questionMap = allQuestions.reduce((acc, q) => { if (q.id) acc[q.id] = q; return acc; }, {});
+    const errorList = Object.entries(errors)
+        .filter(([id]) => questionMap[id])
+        .map(([id, count]) => {
+            const viewCount = views[id] || 0;
+            return {
+                id,
+                errorCount: count,
+                viewCount,
+                errorRate: viewCount > 0 ? ((count / viewCount) * 100).toFixed(1) : 0,
+                question: questionMap[id].pregunta,
+                tema: questionMap[id].tema,
+                competencia: questionMap[id].competencia
+            };
+        })
+        .sort((a, b) => b.errorRate - a.errorRate);
+    console.log('Lista de errores procesada:', errorList);
+
+    DOM.adminReportView.innerHTML = '';
+    if (errorList.length === 0) {
+        console.log('No hay datos de errores para este grado.');
+        DOM.adminReportView.innerHTML = "<div class='admin-card'><p>No hay datos de errores para este grado.</p></div>";
+        return;
+    }
+
+    let reportHTML = `<div class="admin-card"><h3>Rendimiento por Competencia</h3><div class="admin-chart-container" style="max-height: 250px;"><canvas id="competencyChart"></canvas></div></div>`;
+    const competencias = errorList.reduce((acc, err) => { acc[err.competencia] = (acc[err.competencia] || 0) + err.errorCount; return acc; }, {});
+    console.log('Competencias calculadas:', competencias);
+    reportHTML += `<div class="admin-card"><h3>Temas a Reforzar</h3><div class="admin-chart-container" style="position: relative; height: 40vh; width: 80vw; max-width: 100%;"><canvas id="topicChart"></canvas></div></div>`;
+    const temas = errorList.reduce((acc, err) => { acc[err.tema] = (acc[err.tema] || 0) + err.errorCount; return acc; }, {});
+    const sortedTemas = Object.entries(temas).sort((a, b) => b[1] - a[1]);
+    console.log('Temas ordenados:', sortedTemas);
+    const topQuestions = errorList.slice(0, 5);
+    reportHTML += `<div class="admin-card"><h3>Análisis de Ítems (Top 5 por % Error)</h3>`;
+    topQuestions.forEach((q, i) => { reportHTML += `<p><strong>${i+1}. ${q.question.substring(0, 50)}...</strong><br><small>Errores: ${q.errorCount} | Vistas: ${q.viewCount} | Tasa de Error: ${q.errorRate}%</small></p>`; });
+    reportHTML += `</div>`;
+    DOM.adminReportView.innerHTML = reportHTML;
+
+    try {
+        adminCharts.push(new Chart(document.getElementById('competencyChart'), {
+            type: 'doughnut',
+            data: { labels: Object.keys(competencias), datasets: [{ data: Object.values(competencias), backgroundColor: ['#3498db', '#e74c3c', '#f1c40f', '#2ecc71'] }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+        }));
+        adminCharts.push(new Chart(document.getElementById('topicChart'), {
+            type: 'bar',
+            data: { labels: sortedTemas.map(t => t[0]), datasets: [{ label: 'Nº de Errores', data: sortedTemas.map(t => t[1]), backgroundColor: 'rgba(52, 152, 219, 0.7)' }] },
+            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        }));
+        console.log('Gráficas creadas exitosamente.');
+    } catch (chartError) {
+        console.error('Error al crear las gráficas:', chartError);
+        DOM.adminReportView.innerHTML += "<p style='color: var(--red-error);'>Error al generar las gráficas. Verifica los datos.</p>";
+    }
         }
         function actualizarEstadoVisual() { DOM.questionCounter.innerText = enModoDesafio ? `DESAFÍO: ${preguntaActualIndex + 1}` : `PREGUNTA: ${preguntaActualIndex + 1}/${PREGUNTAS_POR_JUEGO}`; DOM.errorsStatus.innerText = `ERRORES: ${errores}/${maxErrores}`; }
         function resetearEstadoVisual() { if (myChart) { myChart.destroy(); myChart = null; } DOM.chartContainer.classList.add('hidden'); DOM.nextBtn.classList.add('hidden'); DOM.feedbackBox.classList.add('hidden'); while (DOM.answerButtons.firstChild) DOM.answerButtons.removeChild(DOM.answerButtons.firstChild); }
